@@ -97,7 +97,7 @@
         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
         <input type="password" id="password" class="form-control" placeholder="Password" required>
       </div>
-      <div id="error-message" class="text-center text-danger mb-2 d-none" style="font-size: 14px;"></div>
+      <div id="error-message-password" class="text-center text-danger mb-2 d-none" style="font-size: 14px;"></div>
       <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
     <div class="form-footer text-center mt-3" style="font-size: 12px; color: #f8f9fa; opacity: 0.8;">
@@ -795,7 +795,7 @@
   const nama = document.getElementById('nama').value.trim();
   const kelas = document.getElementById('kelas').value.trim();
   const password = document.getElementById('password').value.trim(); 
-  const errorDiv = document.getElementById("error-message");
+  const errorDiv = document.getElementById("error-message-password");
 
   if(password !== "a1") {
     errorDiv.textContent = "⚠️ Password salah!";
