@@ -752,6 +752,9 @@
     <div class="offcanvas-body">
       <div id="daftar-soal" class="d-flex flex-wrap gap-2"></div>
       <small class="text-muted d-block mt-3">🟢 Sudah dijawab | ⚪ Belum dijawab</small>
+       <button id="btn-logout" class="btn btn-danger w-100 mt-3">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </button>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -835,7 +838,7 @@ function startTimer() {
 }
 
 function resetForm() {
-  clearInterval(countdownInterval);
+  clearInterval(countdownInterval); // hentikan timer
   document.getElementById("soal").classList.add("d-none");
   document.getElementById("form-wrapper").classList.remove("d-none");
   document.getElementById("btn-daftar-soal").classList.add("d-none");
@@ -843,7 +846,11 @@ function resetForm() {
   document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
   document.getElementById("nama").value = "";
   document.getElementById("kelas").value = "";
+  renderDaftarSoal();
+  const nomorEl = document.getElementById("nomor-soal");
+  if (nomorEl) nomorEl.textContent = `Soal 1 dari 50`;
 }
+
 
 function updateNomorSoal() {
 const soal = [
@@ -982,6 +989,7 @@ const soal = [
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK'
           }).then(() => {
+            resetForm();
             document.getElementById("soal").classList.add("d-none");
             document.getElementById("form-wrapper").classList.remove("d-none");
             document.getElementById("btn-daftar-soal").classList.add("d-none");
@@ -1031,6 +1039,31 @@ const soal = [
       renderDaftarSoal();
     }
   };
+
+document.getElementById("btn-logout").addEventListener("click", () => {
+  Swal.fire({
+    title: 'Yakin ingin logout?',
+    text: "Semua jawaban dan identitas akan dihapus!",
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Ya, Logout',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasSoal'));
+      if (offcanvas) offcanvas.hide();
+      resetForm();
+      Swal.fire({
+        icon: 'success',
+        title: 'Logout Berhasil',
+        showConfirmButton: false,
+        timer: 1200
+      });
+    }
+  });
+});
+
 
 function openFullscreen(elem) {
   if (elem.requestFullscreen) {
