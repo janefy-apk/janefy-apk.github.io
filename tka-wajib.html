@@ -47,11 +47,11 @@
       font-weight: bold;
     }
     #form-wrapper{
-      margin-top: 12%;
+      margin-top: 10%;
     }
     @media (max-width: 768px) {
       #form-wrapper {
-        margin-top: 40%;
+        margin-top: 35%;
         padding-left: 10px;  
         padding-right: 10px; 
       }
@@ -72,34 +72,39 @@
 </head>
 <body class="bg-light">
   <div id="form-wrapper" class="d-flex justify-content-center align-items-center">
-    <div id="form-identitas" class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
-      <div class="text-center mb-3">
-        <img src="https://spmb.sman4ppu.sch.id/assets/dist/img/logo_smapa.png" alt="Logo SMAN 4 PPU" style="max-width: 100px;">
-        <h5 class="mt-2">SMA Negeri 4 PPU <br>TKA Bahasa Inggris XII</h5>
+  <div id="form-identitas" class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
+    <div class="text-center mb-3">
+      <img src="https://spmb.sman4ppu.sch.id/assets/dist/img/logo_smapa.png" alt="Logo SMAN 4 PPU" style="max-width: 100px;">
+      <h5 class="mt-2">SMA Negeri 4 PPU <br>TKA Bahasa Inggris XII</h5>
+    </div>
+    <form id="form-peserta">
+      <div class="mb-3 input-group">
+        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+        <input type="text" id="nama" class="form-control" placeholder="Nama lengkap" required>
       </div>
-      <form id="form-peserta">
-        <div class="mb-3 input-group">
-          <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-          <input type="text" id="nama" class="form-control" placeholder="Nama lengkap" required>
-        </div>
-        <div class="mb-3 input-group">
-          <span class="input-group-text"><i class="bi bi-mortarboard-fill"></i></span>
-          <select id="kelas" class="form-control" required>
-            <option value="" disabled selected>Pilih Kelas</option>
-            <option value="XII-1">XII-1</option>
-            <option value="XII-2">XII-2</option>
-            <option value="XII-3">XII-3</option>
-            <option value="XII-4">XII-4</option>
-            <option value="XII-5">XII-5</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-      </form>
-      <div class="form-footer text-center mt-3" style="font-size: 12px; color: #f8f9fa; opacity: 0.8;">
+      <div class="mb-3 input-group">
+        <span class="input-group-text"><i class="bi bi-mortarboard-fill"></i></span>
+        <select id="kelas" class="form-control" required>
+          <option value="" disabled selected>Pilih Kelas</option>
+          <option value="XII-1">XII-1</option>
+          <option value="XII-2">XII-2</option>
+          <option value="XII-3">XII-3</option>
+          <option value="XII-4">XII-4</option>
+          <option value="XII-5">XII-5</option>
+        </select>
+      </div>
+      <div class="mb-3 input-group">
+        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+        <input type="password" id="password" class="form-control" placeholder="Password" required>
+      </div>
+      <div id="error-message" class="text-center text-danger mb-2 d-none" style="font-size: 14px;"></div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <div class="form-footer text-center mt-3" style="font-size: 12px; color: #f8f9fa; opacity: 0.8;">
       Nurjannah, S.Pd.I. All rights reserved
     </div>
-    </div>
   </div>
+</div>
 
   <div class="container-fluid py-2">
     <div id="soal" class="shadow-sm p-2 d-none">
@@ -789,10 +794,23 @@
   e.preventDefault(); 
   const nama = document.getElementById('nama').value.trim();
   const kelas = document.getElementById('kelas').value.trim();
+  const password = document.getElementById('password').value.trim(); 
+  const errorDiv = document.getElementById("error-message");
+
+  if(password !== "a2") {
+    errorDiv.textContent = "⚠️ Password salah!";
+    errorDiv.classList.remove("d-none");
+    setTimeout(() => {
+      errorDiv.classList.add("d-none");
+    }, 3000);
+    return;
+  }
+
   if (!this.checkValidity()) {
     this.reportValidity();
     return;
   }
+
   openFullscreen(document.documentElement);
   document.getElementById('form-wrapper').classList.add('d-none');
   document.getElementById('soal').classList.remove('d-none');
@@ -809,6 +827,7 @@
   }
   startTimer();
 });
+
 
 function startTimer() {
   const timerEl = document.getElementById('timer');
@@ -843,14 +862,17 @@ function resetForm() {
   document.getElementById("form-wrapper").classList.remove("d-none");
   document.getElementById("btn-daftar-soal").classList.add("d-none");
   localStorage.clear();
+  
   document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
   document.getElementById("nama").value = "";
   document.getElementById("kelas").value = "";
+
+  const passwordInput = document.getElementById("password");
+  if(passwordInput) passwordInput.value = "";
   renderDaftarSoal();
   const nomorEl = document.getElementById("nomor-soal");
   if (nomorEl) nomorEl.textContent = `Soal 1 dari 50`;
 }
-
 
 function updateNomorSoal() {
 const soal = [
@@ -1054,6 +1076,8 @@ document.getElementById("btn-logout").addEventListener("click", () => {
       const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('offcanvasSoal'));
       if (offcanvas) offcanvas.hide();
       resetForm();
+      const passwordInput = document.getElementById("password");
+      if(passwordInput) passwordInput.value = "";
       Swal.fire({
         icon: 'success',
         title: 'Logout Berhasil',
